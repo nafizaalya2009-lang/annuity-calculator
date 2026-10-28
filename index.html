@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator Anuitas - Kelompok 1</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --border: #e2e8f0;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    header h1 {
+      margin-bottom: 5px;
+      color: var(--primary);
+    }
+    .card {
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    .group-box {
+      background-color: #eff6ff;
+      border-left: 4px solid var(--primary);
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+    .group-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 10px 0 0 0;
+    }
+    .group-list li {
+      padding: 6px 0;
+      font-size: 16px;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+    .group-list li:last-child {
+      border-bottom: none;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 15px;
+    }
+    button {
+      width: 100%;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background-color: #1d4ed8;
+    }
+    .btn-secondary {
+      background-color: #64748b;
+    }
+    .btn-secondary:hover {
+      background-color: #475569;
+    }
+    .results {
+      padding: 15px;
+      background-color: #eff6ff;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .results p {
+      margin: 8px 0;
+      font-size: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: right;
+    }
+    th {
+      background-color: #f1f5f9;
+      color: var(--text);
+    }
+    th:first-child, td:first-child {
+      text-align: center;
+    }
+    .chart-container {
+      position: relative;
+      height: 280px;
+      margin-top: 15px;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Kalkulator & Simulasi Anuitas</h1>
+    <p>Aplikasi Matematika Keuangan</p>
+  </header>
+
+  <!-- HALAMAN 1: IDENTITAS KELOMPOK 1 -->
+  <div id="pageGroup" class="card">
+    <h2 style="margin-top: 0; color: var(--primary);">Selamat Datang!</h2>
+    <p>Aplikasi kalkulator dan simulasi tabel pelunasan anuitas ini disusun oleh:</p>
+    
+    <div class="group-box">
+      <h3 style="margin-top: 0; margin-bottom: 10px;">KELOMPOK 1</h3>
+      <ol class="group-list">
+        <li>1. Hafiz</li>
+        <li>2. Fattan</li>
+        <li>3. Novita</li>
+        <li>4. Ayesha</li>
+        <li>5. Nafiza</li>
+      </ol>
+    </div>
+
+    <button onclick="pindahKeInput()">Mulai Perhitungan ➔</button>
+  </div>
+
+  <!-- HALAMAN 2: FORM INPUT ANGKA (BULANAN) -->
+  <div id="pageInput" class="card hidden">
+    <h3>Input Parameter Soal Anuitas</h3>
+    
+    <div class="form-group">
+      <label for="pinjaman">Besar Pinjaman / Modal Awal (M):</label>
+      <input type="number" id="pinjaman" value="10000000" placeholder="Contoh: 10000000">
+    </div>
+
+    <div class="form-group">
+      <label for="bunga">Suku Bunga per Bulan (%):</label>
+      <input type="number" id="bunga" value="2" step="0.1" placeholder="Contoh: 2">
+    </div>
+
+    <div class="form-group">
+      <label for="periode">Lama Periode (Jumlah Bulan):</label>
+      <input type="number" id="periode" value="12" step="1" placeholder="Contoh: 12">
+    </div>
+
+    <button onclick="prosesHitung()">Hitung & Lihat Hasil ➔</button>
+    <button class="btn-secondary" onclick="pindahKeGroup()">⬅ Kembali ke Halaman Utama</button>
+  </div>
+
+  <!-- HALAMAN 3: HASIL PERHITUNGAN & TABEL -->
+  <div id="pageResult" class="hidden">
+    <div class="card">
+      <h3>Hasil Perhitungan Anuitas</h3>
+      <div class="results">
+        <p><strong>Besar Anuitas (A):</strong> <span id="valAnuitas">-</span> / bulan</p>
+        <p><strong>Total Pembayaran:</strong> <span id="valTotal">-</span></p>
+        <p><strong>Total Bunga:</strong> <span id="valTotalBunga">-</span></p>
+      </div>
+
+      <button class="btn-secondary" onclick="pindahKeInput()">⬅ Hitung Soal Lain / Ubah Input</button>
+    </div>
+
+    <div class="card">
+      <h3>Grafik Bunga vs Angsuran</h3>
+      <div class="chart-container">
+        <canvas id="annuityChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Tabel Pelunasan Anuitas</h3>
+      <div style="overflow-x: auto;">
+        <table id="scheduleTable">
+          <thead>
+            <tr>
+              <th>Bulan ke-</th>
+              <th>Sisa Pinjaman Awal</th>
+              <th>Bunga</th>
+              <th>Angsuran Pokok</th>
+              <th>Anuitas (A)</th>
+              <th>Sisa Pinjaman Akhir</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let myChart = null;
+
+  function formatRupiah(val) {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(val);
+  }
+
+  // Fungsi Navigasi Halaman
+  function pindahKeInput() {
+    document.getElementById('pageGroup').classList.add('hidden');
+    document.getElementById('pageResult').classList.add('hidden');
+    document.getElementById('pageInput').classList.remove('hidden');
+    window.scrollTo(0, 0);
+  }
+
+  function pindahKeGroup() {
+    document.getElementById('pageInput').classList.add('hidden');
+    document.getElementById('pageResult').classList.add('hidden');
+    document.getElementById('pageGroup').classList.remove('hidden');
+    window.scrollTo(0, 0);
+  }
+
+  function prosesHitung() {
+    const M = parseFloat(document.getElementById('pinjaman').value);
+    const rateInput = parseFloat(document.getElementById('bunga').value);
+    const periodeInput = parseInt(document.getElementById('periode').value);
+
+    if (isNaN(M) || isNaN(rateInput) || isNaN(periodeInput) || M <= 0 || rateInput <= 0 || periodeInput <= 0) {
+      alert("Mohon isi semua data angka dengan benar!");
+      return;
+    }
+
+    const i = rateInput / 100;
+    const n = periodeInput;
+
+    // Rumus Anuitas Bulanan
+    const A = M * (i / (1 - Math.pow(1 + i, -n)));
+    const totalPembayaran = A * n;
+    const totalBunga = totalPembayaran - M;
+
+    document.getElementById('valAnuitas').innerText = formatRupiah(A);
+    document.getElementById('valTotal').innerText = formatRupiah(totalPembayaran);
+    document.getElementById('valTotalBunga').innerText = formatRupiah(totalBunga);
+
+    generateTableAndChart(M, i, n, A);
+
+    // Pindah ke Halaman Hasil
+    document.getElementById('pageInput').classList.add('hidden');
+    document.getElementById('pageResult').classList.remove('hidden');
+    window.scrollTo(0, 0);
+  }
+
+  function generateTableAndChart(M, i, n, A) {
+    const tbody = document.querySelector('#scheduleTable tbody');
+    tbody.innerHTML = '';
+
+    let sisa = M;
+    const labels = [];
+    const dataBunga = [];
+    const dataAngsuran = [];
+
+    for (let period = 1; period <= n; period++) {
+      const bunga = sisa * i;
+      let angsuran = A - bunga;
+      
+      if (period === n) {
+        angsuran = sisa; // penyesuaian di bulan terakhir agar sisa persis 0
+      }
+      
+      const sisaAkhir = Math.max(0, sisa - angsuran);
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>Bln ${period}</td>
+        <td>${formatRupiah(sisa)}</td>
+        <td>${formatRupiah(bunga)}</td>
+        <td>${formatRupiah(angsuran)}</td>
+        <td>${formatRupiah(bunga + angsuran)}</td>
+        <td>${formatRupiah(sisaAkhir)}</td>
+      `;
+      tbody.appendChild(tr);
+
+      labels.push(`Bln ${period}`);
+      dataBunga.push(bunga.toFixed(2));
+      dataAngsuran.push(angsuran.toFixed(2));
+
+      sisa = sisaAkhir;
+    }
+
+    renderChart(labels, dataBunga, dataAngsuran);
+  }
+
+  function renderChart(labels, dataBunga, dataAngsuran) {
+    const ctx = document.getElementById('annuityChart').getContext('2d');
+    
+    if (myChart) {
+      myChart.destroy();
+    }
+
+    myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Angsuran Pokok',
+            data: dataAngsuran,
+            backgroundColor: '#2563eb'
+          },
+          {
+            label: 'Bunga',
+            data: dataBunga,
+            backgroundColor: '#f59e0b'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { stacked: true },
+          y: { stacked: true }
+        }
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
